@@ -4,23 +4,20 @@ create table "product"(
 	"price" int
 );
 
-alter table "product"
-rename column "product_name" to "name";
-
 alter table product 
 add column "ice" boolean;
 
 insert into product ("name", "price", "ice")
-values ('latte', 15000, false), ('latte', 17000, true)
+values ('latte', 15000, false), ('latte', 17000, true);
 
-alter table "product" drop column ice;
+alter table "product" drop column "ice";
 
 update "product" set "name" = 'americano'
 where "product_id" = 2;
 
 select * from product;
 
-
+-----------------------------------------------------------------------------------------------------------------
 
 create table "promo"(
 	"code" varchar(20) unique,
@@ -45,7 +42,7 @@ where "discount" = 0.5;
 delete from "promo"
 where "discount" = 1;
 
-
+-----------------------------------------------------------------------------------------------------------------
 
 create table "order" (
 	"product_name" varchar(50),
@@ -69,7 +66,7 @@ where "customer_id" = 1;
 
 delete from "order" where "customer_id" = 3;
 
-
+-------------------------------------------------------------------------------------------------------------------------
 
 create table "user"(
 	"customer_id" serial primary key,
@@ -89,3 +86,83 @@ select "first_name" from "user";
 
 update "user" set "first_name" = 'Eugine', "last_name" = 'Crab'
 where "customer_id" = 6;
+
+---------------------------------------------------------------------------------------------------------
+
+alter table "product"
+rename to "products";
+
+alter table "user"
+rename to "users";
+
+alter table "order"
+rename to "orders";
+
+----------------------------------------------------------------------------------------------------------------------
+
+alter table "products"
+add column "quantity" int,
+add column "available" bool,
+add column "description" text,
+add column "createdAt" timestamp default now(),
+add column "updatedAt" timestamp,
+alter column "name" set not null,
+rename column "product_id" to "id",
+ALTER COLUMN "price" TYPE numeric(12, 2);
+
+-----------------------------------------------------------------------------------------------------------------------
+
+alter table "promo"
+add column "id" serial primary key
+add column "createdAt" timestamp default now(),
+add column "updatedAt" timestamp,
+ALTER COLUMN "min" TYPE numeric(12, 2),
+ALTER COLUMN "max" TYPE numeric(12, 2);
+
+-----------------------------------------------------------------------------------------------------------------------
+
+alter table "orders"
+add column "total" numeric(12,2),
+add column "id" serial primary key,
+add column "createdAt" timestamp default now(),
+add column "updatedAt" timestamp;
+-----------------------------------------------------------------------------------------------------------------------
+
+alter table "users"
+rename "customer_id" to "id",
+add column "createdAt" timestamp default now(),
+add column "updatedAt" timestamp;
+
+-----------------------------------------------------------------------------------------------------------------------
+
+create table "categories"(
+	"id" serial primary key,
+	"name" varchar(30) not null,
+	"description" text,
+	"promoId" int references "promo" ("id"),
+	"createdAt" timestamp default now(),
+	"updatedAt" timestamp
+);
+
+-----------------------------------------------------------------------------------------------------------------------
+
+create table "product_categories"(
+	"id" serial primary key,
+	"product_id" int references "products" ("id"),
+	"category_id" int references "categories" ("id"),
+	"createdAt" timestamp default now(),
+	"updatedAt" timestamp
+);
+
+-----------------------------------------------------------------------------------------------------------------------
+
+alter table "orders"
+add constraint "product_id" foreign key ("id") references "products" ("id"),
+add constraint "customer_id" foreign key ("id") references "users" ("id");
+
+-----------------------------------------------------------------------------------------------------------------------
+
+update "products" set "description" = 'random words goes brrrrr';
+
+----------------------------------------------------------------------------------------------------------------------- 
+

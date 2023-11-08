@@ -166,3 +166,20 @@ update "products" set "description" = 'random words goes brrrrr';
 
 ----------------------------------------------------------------------------------------------------------------------- 
 
+insert into "categories" ("name", "description") values ('coffe', 'random words goes brrr');
+
+insert into "product_categories" ("product_id", "category_id") values (1, 1), (2, 1);
+
+select "p"."name", "price", "c"."name" as "category_name" from "products" "p"
+join "product_categories" "pc" on "pc"."product_id" = "p"."id"
+join "categories" "c" on "c"."id" = "pc"."category_id";
+
+
+
+begin;
+	insert into "products" ("name", "price", "quantity", "available", "description")
+	values ('manggo', 20000, null, true, 'one must imagine manggo happy');
+	insert into "categories" ("name", "description") values ('juice', 'manggo must happy imagine one');
+	insert into "product_categories" ("product_id", "category_id") values (3, 2);
+end;
+
